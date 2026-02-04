@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Project Manager</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%);
+            padding: 50px 40px;
+            text-align: center;
+            color: white;
+        }
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+        .welcome-text {
+            font-size: 20px;
+            opacity: 0.95;
+            margin-bottom: 0;
+            font-weight: 300;
+        }
+        .content {
+            padding: 50px 40px;
+        }
+        .greeting {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #1e3a8a;
+        }
+        .message {
+            font-size: 17px;
+            color: #4b5563;
+            margin-bottom: 35px;
+            line-height: 1.7;
+        }
+        .highlight {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+        .credentials-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .section-title::before {
+            content: '🔐';
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .credential-item {
+            margin-bottom: 20px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .credential-item:last-child {
+            margin-bottom: 0;
+        }
+        .credential-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .credential-value {
+            padding: 16px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 16px;
+            color: #1f2937;
+            word-break: break-all;
+            background: white;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .security-notice {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .notice-title {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .notice-text {
+            color: #78350f;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
+            color: #ffffff !important;
+            text-decoration: none !important;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+        }
+        .support-text {
+            font-size: 16px;
+            color: #6b7280;
+            margin: 25px 0;
+        }
+        .signature {
+            font-size: 16px;
+            color: #374151;
+            margin-top: 30px;
+        }
+        .signature strong {
+            color: #1e3a8a;
+        }
+        .footer {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            color: #f9fafb;
+            padding: 40px;
+            text-align: center;
+        }
+        .footer-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .footer-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .footer-text:last-child {
+            margin-bottom: 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+            .header {
+                padding: 40px 30px;
+            }
+            .logo {
+                font-size: 32px;
+            }
+            .welcome-text {
+                font-size: 18px;
+            }
+            .content {
+                padding: 40px 30px;
+            }
+            .greeting {
+                font-size: 22px;
+            }
+            .message {
+                font-size: 16px;
+            }
+            .credentials-section {
+                padding: 25px;
+            }
+            .credential-value {
+                font-size: 15px;
+                padding: 14px;
+            }
+            .cta-button {
+                padding: 18px 20px;
+                font-size: 17px;
+                width: calc(100% - 20px);
+                max-width: none;
+                min-width: auto;
+                margin: 30px 10px;
+                display: block;
+                box-sizing: border-box;
+            }
+            .security-notice {
+                padding: 20px;
+            }
+            .footer {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Project Manager</div>
+            <div class="welcome-text">Welcome to {{name}}'s Project Showcase!</div>
+        </div>
+
+        <div class="content">
+            <div class="greeting">Hello there!</div>
+
+            <div class="message">
+                Your access request to <span class="highlight">{{name}}'s Project Manager</span> has been approved and your account is now ready! You can now explore and manage projects in our platform using the secure credentials below:
+            </div>
+
+            <div class="credentials-section">
+                <div class="section-title">Your Login Credentials</div>
+                <div class="credential-item">
+                    <div class="credential-label">Email Address</div>
+                    <div class="credential-value">{{email}}</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Temporary Password</div>
+                    <div class="credential-value">{{password}}</div>
+                </div>
+            </div>
+
+            <div class="security-notice">
+                <div class="notice-title">Security Notice</div>
+                <div class="notice-text">Please change your password immediately after your first login for enhanced security. Keep your credentials safe and never share them with others.</div>
+            </div>
+
+            <div class="cta-section">
+                <a href="{{loginUrl}}" class="cta-button"><span>Login Now</span></a>
+            </div>
+
+            <div class="support-text">
+                If you have any questions or need assistance, our support team is here to help!
+            </div>
+
+            <div class="signature">
+                Best regards,<br>
+                <strong>The Project Manager Team</strong>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-text">This is an automated message. Please do not reply to this email.</div>
+                <div class="footer-text">&copy; 2026 Project Manager by {{name}}. All rights reserved.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
