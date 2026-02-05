@@ -1,7 +1,6 @@
 const crypto = require('crypto');
 
 function generateRandomPassword() {
-    // Generate a random 10-character password
     const length = 10;
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
     let password = '';

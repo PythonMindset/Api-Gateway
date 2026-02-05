@@ -6,18 +6,12 @@ const handleValidationErrors = require('../../middlewares/handleValidationErrors
 const apiLogger = require('../../middlewares/apiLogger');
 const { requireAdmin } = require('../../middlewares/rbac');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
-
-// Import rate limiter
 const createUserRateLimiter = require('../../middlewares/rateLimiter');
-
-// Import validations
 const validateListProjects = require('../../validations/project/listProjects');
 const validateGetProject = require('../../validations/project/getProject');
 const validateCreateProject = require('../../validations/project/createProject');
 const validateUpdateProject = require('../../validations/project/updateProject');
 const validateDeleteProject = require('../../validations/project/deleteProject');
-
-// Import controllers
 const listProjects = require('../../controllers/project/listProjects');
 const getProject = require('../../controllers/project/getProject');
 const createProject = require('../../controllers/project/createProject');
@@ -30,7 +24,6 @@ router.use(requireAdmin);
 router.use(apiLogger);
 router.use(handleValidationErrors);
 
-// Routes
 router.get('/', validateListProjects, async (req, res) => {
     try {
         const projects = await listProjects(req);

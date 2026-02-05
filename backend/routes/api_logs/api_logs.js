@@ -6,11 +6,7 @@ const handleValidationErrors = require('../../middlewares/handleValidationErrors
 const apiLogger = require('../../middlewares/apiLogger');
 const { requireAdmin } = require('../../middlewares/rbac');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
-
-// Import validation
 const validateGetApiLogs = require('../../validations/api_logs/getApiLogs');
-
-// Import controller
 const getApiLogs = require('../../controllers/api_logs/getApiLogs');
 
 router.use(authenticateToken);
@@ -18,7 +14,6 @@ router.use(requireAdmin);
 router.use(apiLogger);
 router.use(handleValidationErrors);
 
-// Routes
 router.get('/', validateGetApiLogs, async (req, res) => {
     try {
         const result = await getApiLogs(req);

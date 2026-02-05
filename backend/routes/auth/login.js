@@ -14,8 +14,6 @@ router.use(handleValidationErrors);
 router.post('/login', validateLogin, async (req, res) => {
     try {
         const user = await loginController(req);
-
-        // Generate JWT token
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },
             process.env.JWT_SECRET,

@@ -32,7 +32,7 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis: ['./routes/**/*.js', './docs/**/*.js'], // Include routes and docs folders
+    apis: ['./routes/**/*.js', './docs/**/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

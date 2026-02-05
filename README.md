@@ -4,9 +4,8 @@
 [![React](https://img.shields.io/badge/React-19.x-blue.svg)](https://reactjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-blue.svg)](https://www.postgresql.org/)
 [![Express.js](https://img.shields.io/badge/Express.js-5.x-black.svg)](https://expressjs.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> A comprehensive full-stack MERN application for project management with robust authentication, access control, and API monitoring capabilities. Built with modern technologies and best practices.
+> A comprehensive API Gateway system built with MERN stack that provides secure project management, user authentication, access control, and comprehensive API monitoring. Features role-based permissions, email notifications, and Swagger documentation for seamless API management.
 
 ## ✨ Features
 
@@ -48,7 +47,7 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/PythonMindset/Api-Gateway.git
 cd api-gateway
 ```
 
@@ -76,23 +75,57 @@ psql -U <your-username> -d api_gateway_db -f sql/master.sql
 ```
 
 ### 5. Environment Setup
-Create a `.env` file in the `backend` directory:
+Create a `.env` file in the `backend` directory with **all** the following variables:
 
 ```env
-# Database Configuration
+# ===========================================
+# DATABASE CONFIGURATION
+# ===========================================
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=api_gateway_db
 DB_USER=your_db_user
 DB_PASS=your_db_password
 
-# JWT Secret (generate a strong random string)
-JWT_SECRET=your_super_secret_jwt_key_here
+# ===========================================
+# SERVER CONFIGURATION
+# ===========================================
+PORT=3000 (or the one you want)
 
-# Email Configuration (for notifications)
+# ===========================================
+# JWT CONFIGURATION
+# ===========================================
+JWT_SECRET=your_key_here
+JWT_EXPIRES_IN=24h
+
+# ===========================================
+# EMAIL CONFIGURATION (for notifications)
+# ===========================================
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=true
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_app_password
+
+# ===========================================
+# APPLICATION SETTINGS
+# ===========================================
+ALLOWED_ORIGINS=http://localhost:5173
+PROJECT_MANAGER_NAME=Ali Maqsood
+
+# ===========================================
+# RATE LIMITING (optional - defaults provided)
+# ===========================================
+# Global rate limiting (affects all routes)
+GLOBAL_RATE_LIMIT_WINDOW_MS=60000
+GLOBAL_RATE_LIMIT_MAX=1000
+
+# User-specific rate limiting
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX=100
 ```
+
+> **Note:** All environment variables are required for the application to function properly. The rate limiting variables have default values if not specified.
 
 ### 6. Create Admin User
 ```bash
@@ -127,8 +160,8 @@ The API is fully documented using Swagger. Once the backend is running, visit:
 |--------|----------|-------------|---------------|
 | POST | `/auth/login` | User authentication | ❌ |
 | POST | `/auth/accessRequest` | Request access | ❌ |
-| GET | `/user/projects` | List public projects | ❌ |
-| GET | `/user/projects/:id` | Get project details | ❌ |
+| GET | `/user/public` | List public projects | ✅ |
+| GET | `/user/public/:id` | Get project details | ✅ |
 | POST | `/projects` | Create new project | ✅ |
 | PUT | `/projects/:id` | Update project | ✅ |
 | DELETE | `/projects/:id` | Delete project | ✅ |
@@ -209,37 +242,34 @@ cd frontend
 npm test
 ```
 
-## 🚀 Deployment
-
-### Backend Deployment
-```bash
-cd backend
-npm run build  # If build step exists
-npm start
-```
-
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-# Deploy the 'dist' folder to your hosting service
-```
-
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+We welcome contributions to improve the API Gateway! Here's how you can help:
 
+### For Bug Reports 🐛
+- Use the [GitHub Issues](https://github.com/PythonMindset/Api-Gateway/issues) page
+- Include detailed steps to reproduce the issue
+- Mention your environment (OS, Node.js version, etc.)
+
+### For Feature Requests ✨
+- Check if the feature already exists or is planned
+- Describe the use case and why it would be valuable
+- Consider if it fits the scope of an API Gateway system
+
+### For Code Contributions 💻
 1. 🍴 **Fork** the repository
-2. 🌿 **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. 💻 **Make** your changes
-4. ✅ **Test** your changes
-5. 📝 **Commit** your changes: `git commit -m 'Add amazing feature'`
-6. 🚀 **Push** to the branch: `git push origin feature/amazing-feature`
-7. 🔄 **Open** a Pull Request
+2. 🌿 **Create** a feature branch: `git checkout -b feature/your-feature-name`
+3. 💻 **Make** your changes following the existing code style
+4. ✅ **Test** your changes thoroughly
+5. 📝 **Update** documentation if needed
+6. 🚀 **Submit** a pull request with a clear description
 
-## 📝 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+### Development Guidelines
+- Follow ESLint rules for code quality
+- Write meaningful commit messages
+- Update tests for new features
+- Ensure all existing tests pass
+- Follow the existing project structure
 
 ## 🙏 Acknowledgments
 
@@ -252,15 +282,14 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 If you have any questions or need help:
 
-- 📧 **Email**: your-email@example.com
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/api-gateway/issues)
-- 📖 **Documentation**: [API Docs](http://localhost:3000/api-docs)
+- 📧 **Email**: mianalimaqsood2005@gmail.com
+- 🐛 **Issues**: [GitHub Issues](https://github.com/PythonMindset/Api-Gateway/issues)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by Ali Maqsood**
 
 ⭐ **Star this repo if you found it helpful!**
 

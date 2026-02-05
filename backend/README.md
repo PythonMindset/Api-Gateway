@@ -1,0 +1,277 @@
+# 🔧 API Gateway Backend
+
+This is the backend component of the API Gateway system, built with Node.js, Express.js, and PostgreSQL.
+
+## 🏗️ Architecture Overview
+
+The backend follows a modular architecture with clear separation of concerns:
+
+```
+backend/
+├── 📁 config/          # Configuration files (DB, email, Swagger)
+├── 📁 controllers/     # Request handlers & business logic
+├── 📁 middlewares/     # Express middlewares (auth, validation, logging)
+├── 📁 routes/          # API route definitions
+├── 📁 services/        # Business logic services
+├── 📁 sql/            # Database schema & migrations
+├── 📁 utils/          # Helper functions & utilities
+├── 📁 validations/    # Input validation schemas
+├── 📁 docs/           # Swagger API documentation
+└── 📁 test/           # Test scripts & utilities
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 12+
+- npm or yarn
+
+### Installation
+```bash
+cd backend
+npm install
+```
+
+### Database Setup
+```bash
+# Create database
+createdb api_gateway_db
+
+# Run migrations
+psql -U your_username -d api_gateway_db -f sql/master.sql
+```
+
+### Environment Configuration
+Create a `.env` file with all required variables (see main README for complete list).
+
+### Running the Backend
+```bash
+# Development mode
+npm run dev
+
+# Production mode
+npm start
+```
+
+## 📊 Database Schema
+
+### Core Tables
+
+#### Users (`users`)
+```sql
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role user_role NOT NULL, -- 'admin' | 'viewer'
+    last_active TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Projects (`projects`)
+```sql
+CREATE TABLE projects (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    tech_stack TEXT,
+    repo_url VARCHAR(500),
+    status project_status NOT NULL, -- 'planning' | 'testing' | 'completed' | 'live' | 'on_hold' | 'archived'
+    is_public BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT REFERENCES users(id),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Access Requests (`access_request`)
+```sql
+CREATE TABLE access_request (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    status access_request_status DEFAULT 'active', -- 'active' | 'deactivated'
+    requested_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### API Logs (`api_logs`)
+```sql
+CREATE TABLE api_logs (
+    id BIGSERIAL PRIMARY KEY,
+    endpoint VARCHAR(500) NOT NULL,
+    method VARCHAR(10) NOT NULL,
+    status_code INTEGER NOT NULL,
+    user_id BIGINT REFERENCES users(id),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## 🔐 Authentication & Authorization
+
+### JWT Authentication
+- Uses JSON Web Tokens for stateless authentication
+- Tokens expire based on `JWT_EXPIRES_IN` environment variable
+- Protected routes require `Authorization: Bearer <token>` header
+
+### Role-Based Access Control (RBAC)
+- **Admin**: Full access to all resources and user management
+- **Viewer**: Read-only access to public projects and basic operations
+
+### Middleware Stack
+```
+Request Flow:
+Client Request → Rate Limiting → Authentication → Logging → Validation Error Handling → Controller → Response
+```
+
+Note: Authorization middleware is applied selectively based on routes. Public routes may skip authorization, while admin routes include role-based access control.
+
+## 📡 API Endpoints
+
+### Authentication
+- `POST /auth/login` - User login
+- `POST /auth/accessRequest` - Register new user with auto-generated credentials (public)
+
+### User Operations
+- `PUT /user/changePassword` - Change password (authenticated)
+- `GET /user/public` - List public projects (authenticated)
+- `GET /user/public/:id` - Get project details (authenticated)
+
+### Project Management (Admin Only)
+- `GET /projects` - List all projects
+- `POST /projects` - Create new project
+- `GET /projects/:id` - Get project details
+- `PUT /projects/:id` - Update project
+- `DELETE /projects/:id` - Delete project
+
+### API Logs (Admin Only)
+- `GET /api-logs` - View API request logs
+
+### Health Check
+- `GET /health` - Application health status
+
+## 🛡️ Security Features
+
+### Password Security
+- bcrypt hashing with salt rounds for all stored passwords
+- Password complexity validation for password changes (8+ chars, uppercase, lowercase, numbers)
+- Auto-generated secure passwords for new user registrations
+
+### Rate Limiting
+- Global rate limiting per IP
+- User-specific rate limiting
+- Configurable windows and limits
+
+### Input Validation
+- Comprehensive validation using express-validator
+- Sanitization of user inputs
+- Structured error responses
+
+### CORS Configuration
+- Enabled for cross-origin requests
+- Currently allows all origins (configurable for production)
+
+## 📧 Email System
+
+### Configuration
+- SMTP transport using nodemailer
+- Support for Gmail and other providers
+- HTML email templates
+
+### Email Types
+- **Access Granted**: Sent immediately when user registers via access request
+- Contains auto-generated login credentials and instructions
+
+## 📝 Logging & Monitoring
+
+### API Logging
+- All authenticated requests automatically logged to database
+- Tracks: endpoint, HTTP method, status code, user ID, timestamp
+- Useful for analytics, debugging, and audit trails
+
+### Error Handling
+- Centralized error handling middleware
+- Structured error responses
+- Proper HTTP status codes
+
+## 🧪 Testing
+
+### Test Scripts
+- Admin user creation: `node test/admin.js <email> <password>`
+- Located in `backend/test/` directory
+
+### Running Tests
+```bash
+# Backend tests (when implemented)
+npm test
+
+# Integration tests
+# Add your test commands here
+```
+
+## 🔧 Development Guidelines
+
+### Code Organization
+- **Controllers**: Handle HTTP requests and responses
+- **Services**: Contain business logic
+- **Utils**: Helper functions and utilities
+- **Validations**: Input validation schemas
+- **Middlewares**: Express middleware functions
+
+### Naming Conventions
+- Files: camelCase (e.g., `userController.js`)
+- Functions: camelCase (e.g., `getUserById`)
+- Constants: UPPER_SNAKE_CASE
+- Database: snake_case
+
+### Error Handling
+- Use custom error classes
+- Consistent error response format
+- Proper HTTP status codes
+
+## 🚀 Deployment Considerations
+
+### Environment Variables
+Ensure all production environment variables are set:
+- Database credentials
+- JWT secrets
+- Email configuration
+- CORS settings
+
+### Database
+- Use connection pooling for production
+- Set up database backups
+- Monitor database performance
+
+### Security
+- Use HTTPS in production
+- Set secure cookie options
+- Regular security audits
+
+### Monitoring
+- Set up application monitoring
+- Log aggregation
+- Performance monitoring
+
+## 📚 Additional Resources
+
+- [Express.js Documentation](https://expressjs.com/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [JWT.io](https://jwt.io/)
+- [Swagger/OpenAPI](https://swagger.io/)
+
+## 🤝 Contributing to Backend
+
+When contributing to the backend:
+
+1. Follow the existing code structure
+2. Add proper validation for new endpoints
+3. Include error handling
+4. Update API documentation
+5. Add tests for new features
+6. Follow the commit message conventions
+
+---
+
+**For project overview, see the main [README.md](../README.md)**

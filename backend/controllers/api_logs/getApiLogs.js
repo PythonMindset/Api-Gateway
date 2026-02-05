@@ -3,7 +3,6 @@ const pool = require('../../config/db');
 const getApiLogs = async (req) => {
     const { page = 1, limit = 50, user_id, endpoint, method, status_code } = req.query;
 
-    // Build WHERE conditions
     const conditions = [];
     const values = [];
     let paramCount = 1;
@@ -34,12 +33,10 @@ const getApiLogs = async (req) => {
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    // Get total count
     const countQuery = `SELECT COUNT(*) as total FROM api_logs ${whereClause}`;
     const countResult = await pool.query(countQuery, values);
     const total = parseInt(countResult.rows[0].total);
 
-    // Get paginated results
     const offset = (parseInt(page) - 1) * parseInt(limit);
     const query = `
         SELECT id, endpoint, method, status_code, user_id, timestamp

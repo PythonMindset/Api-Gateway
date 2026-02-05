@@ -1,26 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
+const authenticateToken = require('../../middlewares/authenticateToken');
 const handleValidationErrors = require('../../middlewares/handleValidationErrors');
 const apiLogger = require('../../middlewares/apiLogger');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
-
-// Import rate limiter
 const createUserRateLimiter = require('../../middlewares/rateLimiter');
-
-// Import validations
 const validateListPublicProjects = require('../../validations/user/listPublicProjects');
 const validateGetPublicProjectById = require('../../validations/user/getPublicProjectById');
-
-// Import controllers
 const listPublicProjects = require('../../controllers/user/listPublicProjects');
 const getPublicProjectById = require('../../controllers/user/getPublicProjectById');
 
 router.use(createUserRateLimiter());
+router.use(authenticateToken);
 router.use(apiLogger);
 router.use(handleValidationErrors);
 
-// Routes
 router.get('/public', validateListPublicProjects, async (req, res) => {
     try {
         const projects = await listPublicProjects(req);
