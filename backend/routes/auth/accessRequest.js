@@ -4,8 +4,10 @@ const router = express.Router();
 const validateAccessRequest = require('../../validations/auth/accessRequest');
 const accessRequestController = require('../../controllers/auth/accessRequest');
 const handleValidationErrors = require('../../middlewares/handleValidationErrors');
+const apiLogger = require('../../middlewares/apiLogger');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
 
+router.use(apiLogger);
 router.use(handleValidationErrors);
 
 router.post('/access-request', validateAccessRequest, async (req, res) => {

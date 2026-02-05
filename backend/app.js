@@ -9,7 +9,6 @@ const app = express();
 app.use(cors());
 app.use(require('./middlewares/rateLimiter').createGlobalRateLimiter());
 app.use(express.json());
-app.use(require('./middlewares/apiLogger'));
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -18,6 +17,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', require('./routes/auth/login'));
 app.use('/auth', require('./routes/auth/accessRequest'));
 app.use('/user', require('./routes/user/changePassword'));
+app.use('/user', require('./routes/user/projects'));
+app.use('/projects', require('./routes/project/project'));
+app.use('/api-logs', require('./routes/api_logs/api_logs'));
 
 // Health check
 app.get('/health', (req, res) => {
