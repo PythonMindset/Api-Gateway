@@ -182,9 +182,9 @@ The API is fully documented using Swagger. Once the backend is running, visit:
 | POST | `/auth/accessRequest` | Request access | ❌ |
 | GET | `/user/public` | List public projects | ✅ |
 | GET | `/user/public/:id` | Get project details | ✅ |
-| POST | `/projects` | Create new project | ✅ |
-| PUT | `/projects/:id` | Update project | ✅ |
-| DELETE | `/projects/:id` | Delete project | ✅ |
+| POST | `/projects` | Create new project | ✅ (Admin) |
+| PUT | `/projects/:id` | Update project | ✅ (Admin) |
+| DELETE | `/projects/:id` | Delete project | ✅ (Admin) |
 | GET | `/admin/api-logs` | View API logs | ✅ (Admin) |
 
 ## 🏗️ Project Structure
