@@ -1,7 +1,7 @@
 const pool = require('../../config/db');
 
 const getApiLogs = async (req) => {
-    const { page = 1, limit = 50, user_id, endpoint, method, status_code } = req.query;
+    const { page = 1, limit = 50, user_id, endpoint, method, status_code, level } = req.query;
 
     const conditions = [];
     const values = [];
@@ -31,6 +31,12 @@ const getApiLogs = async (req) => {
         paramCount++;
     }
 
+    if (level) {
+        conditions.push(`level = $${paramCount}`);
+        values.push(level);
+        paramCount++;
+    }
+
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
     const countQuery = `SELECT COUNT(*) as total FROM api_logs ${whereClause}`;
@@ -39,7 +45,7 @@ const getApiLogs = async (req) => {
 
     const offset = (parseInt(page) - 1) * parseInt(limit);
     const query = `
-        SELECT id, endpoint, method, status_code, user_id, timestamp
+        SELECT id, endpoint, method, status_code, user_id, level, timestamp
         FROM api_logs
         ${whereClause}
         ORDER BY timestamp DESC

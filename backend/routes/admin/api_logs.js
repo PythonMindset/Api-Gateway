@@ -6,8 +6,8 @@ const handleValidationErrors = require('../../middlewares/handleValidationErrors
 const apiLogger = require('../../middlewares/apiLogger');
 const { requireAdmin } = require('../../middlewares/rbac');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
-const validateGetApiLogs = require('../../validations/api_logs/getApiLogs');
-const getApiLogs = require('../../controllers/api_logs/getApiLogs');
+const validateGetApiLogs = require('../../validations/admin/getApiLogs');
+const getApiLogs = require('../../controllers/admin/getApiLogs');
 
 router.use(authenticateToken);
 router.use(requireAdmin);

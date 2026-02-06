@@ -1,6 +1,6 @@
 const pool = require('../../config/db');
 const hashPassword = require('../../utils/auth/hashPassword');
-const { generateRandomPassword } = require('../../services/accessRequest');
+const { generateRandomPassword } = require('../../services/passwordGenerator/accessRequest');
 const sendAccessGrantedEmail = require('../../utils/email/sendAccessGranted');
 
 const accessRequest = async (req) => {

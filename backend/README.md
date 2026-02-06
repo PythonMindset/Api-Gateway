@@ -4,6 +4,13 @@ This is the backend component of the API Gateway system, built with Node.js, Exp
 
 ## 🏗️ Architecture Overview
 
+This project follows a layered architecture:
+
+- **Routes** handle HTTP concerns
+- **Controllers** manage request logic  
+- **Services** contain business logic
+- **SQL** is managed separately for clarity and performance
+
 The backend follows a modular architecture with clear separation of concerns:
 
 ```
@@ -19,6 +26,24 @@ backend/
 ├── 📁 docs/           # Swagger API documentation
 └── 📁 test/           # Test scripts & utilities
 ```
+
+## 🎯 Design Decisions
+
+- PostgreSQL chosen for structured relational data
+- SQL used directly for performance and control
+- Fast cleanup routines to prevent log bloat
+- Modular middleware for auth, logging, and rate limiting
+
+## 🎯 Project Scope
+
+This project is intentionally scoped as a single-node API gateway to demonstrate:
+
+- Auth & RBAC
+- Rate limiting
+- Structured logging
+- SQL-first design
+
+Without introducing unnecessary enterprise complexity.
 
 ## 🚀 Quick Start
 
@@ -104,6 +129,7 @@ CREATE TABLE api_logs (
     method VARCHAR(10) NOT NULL,
     status_code INTEGER NOT NULL,
     user_id BIGINT REFERENCES users(id),
+    level VARCHAR(10) DEFAULT 'info' CHECK (level IN ('info', 'warning', 'error')),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -146,7 +172,10 @@ Note: Authorization middleware is applied selectively based on routes. Public ro
 - `DELETE /projects/:id` - Delete project
 
 ### API Logs (Admin Only)
-- `GET /api-logs` - View API request logs
+- `GET /admin/api-logs` - View API request logs (filterable by user, endpoint, method, status code, level)
+
+### Admin Operations (Admin Only)
+- `GET /admin/access-requests` - View all access requests with user details (email, status, request date, last login, etc.)
 
 ### Health Check
 - `GET /health` - Application health status
@@ -187,7 +216,8 @@ Note: Authorization middleware is applied selectively based on routes. Public ro
 
 ### API Logging
 - All authenticated requests automatically logged to database
-- Tracks: endpoint, HTTP method, status code, user ID, timestamp
+- Tracks: endpoint, HTTP method, status code, user ID, log level, timestamp
+- Log levels: info (2xx-3xx), warning (4xx), error (5xx)
 - Useful for analytics, debugging, and audit trails
 
 ### Error Handling
@@ -195,7 +225,34 @@ Note: Authorization middleware is applied selectively based on routes. Public ro
 - Structured error responses
 - Proper HTTP status codes
 
-## 🧪 Testing
+## 🔄 Automated Maintenance Tasks
+
+The backend includes scheduled background tasks for database maintenance:
+
+### Log Cleanup
+- **Frequency**: Daily
+- **Action**: Automatically deletes API logs older than `LOG_EXPIRY` days (configurable via `.env`)
+- **Purpose**: Prevents database bloat and maintains performance
+
+### Inactive User Cleanup
+- **Frequency**: Daily
+- **Action**: Removes viewer accounts that are inactive based on:
+  - Users with `last_active` older than `MAX_VIEWER_INACTIVITY_DAYS` (default: 30 days)
+  - Users with no `last_active` (never logged in) and `created_at` older than `NEW_USER_INACTIVITY_DAYS` (default: 7 days)
+- **Additional**: Updates corresponding `access_request` records to 'deactivated' status
+- **Purpose**: Cleans up unused accounts and maintains data integrity
+
+### Scheduling
+- Tasks run every 24 hours from server startup
+- No external cron jobs required
+- Configurable via environment variables
+
+## � Background Cleanup
+
+- Old API logs are periodically removed
+- Inactive viewers are cleaned to reduce DB load
+
+## �🧪 Testing
 
 ### Test Scripts
 - Admin user creation: `node test/admin.js <email> <password>`
