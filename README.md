@@ -5,7 +5,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-blue.svg)](https://www.postgresql.org/)
 [![Express.js](https://img.shields.io/badge/Express.js-5.x-black.svg)](https://expressjs.com/)
 
-> A comprehensive API Gateway system built with MERN stack that provides secure project management, user authentication, access control, and comprehensive API monitoring. Features role-based permissions, email notifications, and Swagger documentation for seamless API management.
+> A comprehensive API Gateway system built with MERN stack that provides secure project management, user authentication, access control, comprehensive API monitoring, and automated maintenance tasks. Features role-based permissions, email notifications, admin dashboard, and Swagger documentation for seamless API management.
 
 ## ✨ Features
 
@@ -14,7 +14,9 @@
 - 👥 **User Roles** - Admin and viewer roles with appropriate permissions
 - 📧 **Email Notifications** - Automated email notifications for access requests
 - 📈 **API Logging** - Comprehensive logging of all API requests
-- 📚 **Swagger Documentation** - Interactive API documentation
+- � **Automated Maintenance** - Daily cleanup of old logs and inactive user accounts
+- 👨‍💼 **Admin Dashboard** - View and manage access requests with detailed user information
+- �📚 **Swagger Documentation** - Interactive API documentation
 - 🎨 **Modern UI** - Clean and responsive React interface
 - 🛡️ **Security** - Password hashing, input validation, and rate limiting
 
@@ -34,6 +36,24 @@
 - **Vite** - Next-generation frontend tooling for faster development
 - **ESLint** - Code linting and formatting
 - **Modern CSS** - Responsive and beautiful styling
+
+## 🎯 Design Decisions
+
+- PostgreSQL chosen for structured relational data
+- SQL used directly for performance and control
+- Fast cleanup routines to prevent log bloat
+- Modular middleware for auth, logging, and rate limiting
+
+## 🎯 Project Scope
+
+This project is intentionally scoped as a single-node API gateway to demonstrate:
+
+- Auth & RBAC
+- Rate limiting
+- Structured logging
+- SQL-first design
+
+Without introducing unnecessary enterprise complexity.
 
 ## 📋 Prerequisites
 
@@ -165,7 +185,7 @@ The API is fully documented using Swagger. Once the backend is running, visit:
 | POST | `/projects` | Create new project | ✅ |
 | PUT | `/projects/:id` | Update project | ✅ |
 | DELETE | `/projects/:id` | Delete project | ✅ |
-| GET | `/api-logs` | View API logs | ✅ (Admin) |
+| GET | `/admin/api-logs` | View API logs | ✅ (Admin) |
 
 ## 🏗️ Project Structure
 

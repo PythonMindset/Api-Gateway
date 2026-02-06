@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const { cleanupOldLogs } = require('./services/cleanup/cleanupLogs');
+const { cleanupInactiveViewers } = require('./services/cleanup/cleanupInactiveViewers');
 const { successResponse, errorResponse } = require('./utils/responseformat');
 const { swaggerUi, swaggerSpec } = require('./config/swagger');
 
@@ -19,7 +21,8 @@ app.use('/auth', require('./routes/auth/accessRequest'));
 app.use('/user', require('./routes/user/changePassword'));
 app.use('/user', require('./routes/user/projects'));
 app.use('/projects', require('./routes/project/project'));
-app.use('/api-logs', require('./routes/api_logs/api_logs'));
+app.use('/admin/api-logs', require('./routes/admin/api_logs'));
+app.use('/admin', require('./routes/admin/accessRequests'));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -36,5 +39,14 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json(errorResponse('Something went wrong!', 500));
 });
+
+// Schedule daily cleanup of old logs
+function scheduleCleanup() {
+    cleanupOldLogs();
+    cleanupInactiveViewers();
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+    setTimeout(scheduleCleanup, ONE_DAY_MS);
+}
+scheduleCleanup();
 
 module.exports = app;

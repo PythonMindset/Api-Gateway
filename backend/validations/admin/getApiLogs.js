@@ -25,7 +25,11 @@ const validateGetApiLogs = [
     query('status_code')
         .optional()
         .isInt({ min: 100, max: 599 })
-        .withMessage('Status code must be between 100 and 599')
+        .withMessage('Status code must be between 100 and 599'),
+    query('level')
+        .optional()
+        .isIn(['info', 'warning', 'error'])
+        .withMessage('Level must be one of: info, warning, error')
 ];
 
 module.exports = validateGetApiLogs;
