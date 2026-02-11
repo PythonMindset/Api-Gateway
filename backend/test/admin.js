@@ -10,8 +10,8 @@ async function createAdminUser(email, password) {
             return;
         }
         const hashedPassword = await hashPassword(password);
-        const insertQuery = 'INSERT INTO users (email, password, role) VALUES ($1, $2, $3)';
-        await pool.query(insertQuery, [email, hashedPassword, 'admin']);
+        const insertQuery = 'INSERT INTO users (email, name, password, role) VALUES ($1, $2, $3, $4)';
+        await pool.query(insertQuery, [email, email, hashedPassword, 'admin']);
 
         console.log('Admin user created successfully');
     } catch (error) {

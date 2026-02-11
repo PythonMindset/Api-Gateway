@@ -36,6 +36,8 @@
 - **Vite** - Next-generation frontend tooling for faster development
 - **ESLint** - Code linting and formatting
 - **Modern CSS** - Responsive and beautiful styling
+- **Custom API Services** - Modular HTTP client for all backend endpoints
+- **React Hooks** - Reusable hooks for authentication, data fetching, and state management
 
 ## 🎯 Design Decisions
 
@@ -179,13 +181,17 @@ The API is fully documented using Swagger. Once the backend is running, visit:
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
 | POST | `/auth/login` | User authentication | ❌ |
-| POST | `/auth/accessRequest` | Request access | ❌ |
+| POST | `/auth/access-request` | Request access with name & description | ❌ |
+| PUT | `/user/change-password` | Change user password | ✅ |
 | GET | `/user/public` | List public projects | ✅ |
 | GET | `/user/public/:id` | Get project details | ✅ |
-| POST | `/projects` | Create new project | ✅ |
-| PUT | `/projects/:id` | Update project | ✅ |
-| DELETE | `/projects/:id` | Delete project | ✅ |
-| GET | `/admin/api-logs` | View API logs | ✅ (Admin) |
+| GET | `/projects` | List all projects | ✅ (Admin) |
+| POST | `/projects` | Create new project | ✅ (Admin) |
+| GET | `/projects/:id` | Get project details | ✅ (Admin) |
+| PUT | `/projects/:id` | Update project | ✅ (Admin) |
+| DELETE | `/projects/:id` | Delete project | ✅ (Admin) |
+| GET | `/admin/access-requests` | View access requests | ✅ (Admin) |
+| GET | `/admin/api-logs` | View API logs with filtering | ✅ (Admin) |
 
 ## 🏗️ Project Structure
 

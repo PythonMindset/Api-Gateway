@@ -3,7 +3,7 @@ const comparePassword = require('../../utils/auth/comparePassword');
 
 const login = async (req) => {
     const { email, password } = req.body;
-    const userQuery = 'SELECT id, email, password, role FROM users WHERE email = $1';
+    const userQuery = 'SELECT id, email, name, password, role FROM users WHERE email = $1';
     const result = await pool.query(userQuery, [email]);
 
     if (result.rows.length === 0) {
@@ -17,7 +17,7 @@ const login = async (req) => {
     }
     await pool.query('UPDATE users SET last_active = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
     
-    return { id: user.id, email: user.email, role: user.role };
+    return { id: user.id, email: user.email, name: user.name, role: user.role };
 };
 
 module.exports = login;

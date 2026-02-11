@@ -4,8 +4,8 @@ const { successResponse, errorResponse } = require('../../utils/responseformat')
 const getAccessRequests = async (req, res) => {
     try {
         const query = `
-            SELECT ar.id, ar.email, ar.status, ar.requested_on,
-                   u.last_active, u.created_at, u.role
+            SELECT ar.id, ar.email, ar.name, ar.description, ar.status, ar.requested_on,
+                   u.name as user_name, u.last_active, u.created_at, u.role
             FROM access_request ar
             LEFT JOIN users u ON ar.email = u.email
             ORDER BY ar.requested_on DESC

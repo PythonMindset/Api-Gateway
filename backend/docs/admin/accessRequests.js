@@ -33,6 +33,12 @@
  *                         type: string
  *                         format: email
  *                         example: "viewer@example.com"
+ *                       name:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       description:
+ *                         type: string
+ *                         example: "Requesting access to manage projects"
  *                       status:
  *                         type: string
  *                         enum: [active, deactivated]
@@ -51,6 +57,10 @@
  *                         format: date-time
  *                         nullable: true
  *                         example: "2023-09-15T09:00:00Z"
+ *                       user_name:
+ *                         type: string
+ *                         nullable: true
+ *                         example: "John Doe"
  *                       role:
  *                         type: string
  *                         enum: [admin, viewer]
