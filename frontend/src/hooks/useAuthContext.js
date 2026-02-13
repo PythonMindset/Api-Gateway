@@ -1,25 +1,29 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-
-        if (storedToken && storedUser) {
+        const initializeAuth = () => {
             try {
-                setToken(storedToken);
-                setUser(JSON.parse(storedUser));
+                const storedToken = localStorage.getItem('token');
+                const storedUser = localStorage.getItem('user');
+
+                if (storedToken && storedUser) {
+                    setToken(storedToken);
+                    setUser(JSON.parse(storedUser));
+                }
             } catch (error) {
+                // Clear corrupted data
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
+                console.warn('Auth initialization error:', error);
             }
-        }
-        setLoading(false);
+        };
+
+        initializeAuth();
     }, []);
 
     const login = (userData, authToken) => {
@@ -42,17 +46,16 @@ export const AuthProvider = ({ children }) => {
     const value = {
         user,
         token,
-        loading,
         isAuthenticated,
         isAdmin,
         login,
         logout,
     };
 
-    return (
-        <AuthContext.Provider value={value}>
-        {children}
-        </AuthContext.Provider>
+    return React.createElement(
+        AuthContext.Provider,
+        { value },
+        children
     );
 };
 
