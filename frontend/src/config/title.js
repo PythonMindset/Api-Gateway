@@ -1,7 +1,8 @@
 const titles = {
     default: 'Project Manager',
     login: 'Login - Project Manager',
-    dashboard: 'Dashboard - Project Manager'
+    dashboard: 'Dashboard - Project Manager',
+    request: 'Request Access - Project Manager'
 };
 
 export const getPageTitle = (page) => {
