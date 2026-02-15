@@ -185,13 +185,10 @@ The API is fully documented using Swagger. Once the backend is running, visit:
 | PUT | `/user/change-password` | Change user password | ✅ |
 | GET | `/user/public` | List public projects | ✅ |
 | GET | `/user/public/:id` | Get project details | ✅ |
-| GET | `/projects` | List all projects | ✅ (Admin) |
 | POST | `/projects` | Create new project | ✅ (Admin) |
-| GET | `/projects/:id` | Get project details | ✅ (Admin) |
 | PUT | `/projects/:id` | Update project | ✅ (Admin) |
 | DELETE | `/projects/:id` | Delete project | ✅ (Admin) |
-| GET | `/admin/access-requests` | View access requests | ✅ (Admin) |
-| GET | `/admin/api-logs` | View API logs with filtering | ✅ (Admin) |
+| GET | `/admin/api-logs` | View API logs | ✅ (Admin) |
 
 ## 🏗️ Project Structure
 
