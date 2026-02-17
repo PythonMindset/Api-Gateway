@@ -36,6 +36,8 @@
 - **Vite** - Next-generation frontend tooling for faster development
 - **ESLint** - Code linting and formatting
 - **Modern CSS** - Responsive and beautiful styling
+- **Custom API Services** - Modular HTTP client for all backend endpoints
+- **React Hooks** - Reusable hooks for authentication, data fetching, and state management
 
 ## 🎯 Design Decisions
 
@@ -179,7 +181,8 @@ The API is fully documented using Swagger. Once the backend is running, visit:
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
 | POST | `/auth/login` | User authentication | ❌ |
-| POST | `/auth/accessRequest` | Request access | ❌ |
+| POST | `/auth/access-request` | Request access with name & description | ❌ |
+| PUT | `/user/change-password` | Change user password | ✅ |
 | GET | `/user/public` | List public projects | ✅ |
 | GET | `/user/public/:id` | Get project details | ✅ |
 | POST | `/projects` | Create new project | ✅ (Admin) |

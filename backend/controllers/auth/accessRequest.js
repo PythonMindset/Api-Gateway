@@ -4,7 +4,7 @@ const { generateRandomPassword } = require('../../services/passwordGenerator/acc
 const sendAccessGrantedEmail = require('../../utils/email/sendAccessGranted');
 
 const accessRequest = async (req) => {
-    const { email } = req.body;
+    const { email, name, description } = req.body;
 
     const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
     if (existingUser.rows.length > 0) {
@@ -15,14 +15,14 @@ const accessRequest = async (req) => {
     const hashedPassword = await hashPassword(plainPassword);
 
     const userResult = await pool.query(
-        'INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING id, email, role',
-        [email, hashedPassword, 'viewer']
+        'INSERT INTO users (email, name, password, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
+        [email, name, hashedPassword, 'viewer']
     );
     const user = userResult.rows[0];
 
     await pool.query(
-        'INSERT INTO access_request (email) VALUES ($1)',
-        [email]
+        'INSERT INTO access_request (email, name, description) VALUES ($1, $2, $3)',
+        [email, name, description]
     );
 
     try {

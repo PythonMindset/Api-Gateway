@@ -51,6 +51,9 @@
  *                         email:
  *                           type: string
  *                           example: user@example.com
+ *                         name:
+ *                           type: string
+ *                           example: John Doe
  *                         role:
  *                           type: string
  *                           enum: [admin, viewer]

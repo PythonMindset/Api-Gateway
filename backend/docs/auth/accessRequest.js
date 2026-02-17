@@ -13,11 +13,18 @@
  *             type: object
  *             required:
  *               - email
+ *               - name
  *             properties:
  *               email:
  *                 type: string
  *                 format: email
  *                 example: newuser@example.com
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               description:
+ *                 type: string
+ *                 example: Requesting access to manage projects
  *     responses:
  *       200:
  *         description: Access request processed successfully
@@ -44,6 +51,9 @@
  *                         email:
  *                           type: string
  *                           example: newuser@example.com
+ *                         name:
+ *                           type: string
+ *                           example: John Doe
  *                         role:
  *                           type: string
  *                           example: viewer
