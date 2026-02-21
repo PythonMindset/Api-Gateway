@@ -38,6 +38,15 @@ const colors = {
     info: {
         main: '#0284C7',
     },
+
+    status: {
+        planning: '#9333EA',
+        testing: '#F59E0B',
+        completed: '#16A34A',
+        live: '#0284C7',
+        on_hold: '#EF4444',
+        archived: '#6B7280',
+    },
 };
 
 export default colors;

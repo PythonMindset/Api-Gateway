@@ -1,30 +1,33 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 const AuthContext = createContext();
 
+const initializeAuthState = () => {
+    try {
+        const storedToken = localStorage.getItem('token');
+        const storedUser = localStorage.getItem('user');
+
+        if (storedToken && storedUser) {
+            return {
+                token: storedToken,
+                user: JSON.parse(storedUser),
+            };
+        }
+    } catch (error) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        console.warn('Auth initialization error:', error);
+    }
+
+    return {
+        token: null,
+        user: null,
+    };
+};
+
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
-
-    useEffect(() => {
-        const initializeAuth = () => {
-            try {
-                const storedToken = localStorage.getItem('token');
-                const storedUser = localStorage.getItem('user');
-
-                if (storedToken && storedUser) {
-                    setToken(storedToken);
-                    setUser(JSON.parse(storedUser));
-                }
-            } catch (error) {
-                // Clear corrupted data
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                console.warn('Auth initialization error:', error);
-            }
-        };
-
-        initializeAuth();
-    }, []);
+    const initialAuth = initializeAuthState();
+    const [user, setUser] = useState(initialAuth.user);
+    const [token, setToken] = useState(initialAuth.token);
 
     const login = (userData, authToken) => {
         setUser(userData);

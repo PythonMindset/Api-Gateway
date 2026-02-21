@@ -30,7 +30,6 @@ const RequestAccessModal = ({ open, onClose }) => {
         setSubmitted(false);
     };
 
-    // Reset form when modal opens
     React.useEffect(() => {
         if (open) {
             resetForm();
@@ -102,7 +101,6 @@ const RequestAccessModal = ({ open, onClose }) => {
             }}
         >
             {submitted ? (
-                // Success State
                 <Box
                     sx={{
                         background: 'linear-gradient(-45deg, #0f172a, #1e293b, #111827, #1e3a8a)',
@@ -162,7 +160,6 @@ const RequestAccessModal = ({ open, onClose }) => {
             ) : (
                 <DialogContent sx={{ p: 0 }}>
                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: 600 }}>
-                        {/* Left Side - Info Section */}
                         <Box
                             sx={{
                                 background: 'linear-gradient(-45deg, #0f172a, #1e293b, #111827, #1e3a8a)',
@@ -182,7 +179,6 @@ const RequestAccessModal = ({ open, onClose }) => {
                                 overflow: 'hidden',
                             }}
                         >
-                            {/* Glow Effects */}
                             <Box
                                 sx={{
                                     position: 'absolute',
@@ -223,7 +219,6 @@ const RequestAccessModal = ({ open, onClose }) => {
                                 </Typography>
 
                                 <Stack spacing={3}>
-                                    {/* Password Change Notice */}
                                     <Box
                                         sx={{
                                             p: 2.5,
@@ -238,15 +233,14 @@ const RequestAccessModal = ({ open, onClose }) => {
                                             },
                                         }}
                                     >
-                                        <Typography sx={{ fontSize: 12, fontWeight: 700, mb: 1, color: '#fca5a5' }}>
-                                            🔐 PASSWORD CHANGE REQUIRED
+                                        <Typography sx={{ fontSize: 12, fontWeight: 1000, mb: 1, color: '#fca5a5' }}>
+                                            PASSWORD CHANGE REQUIRED
                                         </Typography>
                                         <Typography sx={{ fontSize: 13, opacity: 0.9, lineHeight: 1.6 }}>
                                             After login, you <strong>must change your password within 7 days</strong>. Failure to do so will result in automatic account deletion.
                                         </Typography>
                                     </Box>
 
-                                    {/* Access Expiration Notice */}
                                     <Box
                                         sx={{
                                             p: 2.5,
@@ -261,15 +255,14 @@ const RequestAccessModal = ({ open, onClose }) => {
                                             },
                                         }}
                                     >
-                                        <Typography sx={{ fontSize: 12, fontWeight: 700, mb: 1, color: '#fbbf24' }}>
-                                            ⏰ ACCESS EXPIRATION
+                                        <Typography sx={{ fontSize: 12, fontWeight: 1000, mb: 1, color: '#fbbf24' }}>
+                                            ACCESS EXPIRATION
                                         </Typography>
                                         <Typography sx={{ fontSize: 13, opacity: 0.9, lineHeight: 1.6 }}>
                                             If you don't access the platform within <strong>30 days</strong>, your account will be automatically deleted.
                                         </Typography>
                                     </Box>
 
-                                    {/* Account Status Notice */}
                                     <Box
                                         sx={{
                                             p: 2.5,
@@ -284,8 +277,8 @@ const RequestAccessModal = ({ open, onClose }) => {
                                             },
                                         }}
                                     >
-                                        <Typography sx={{ fontSize: 12, fontWeight: 700, mb: 1, color: '#86efac' }}>
-                                            ✓ ACCOUNT STATUS
+                                        <Typography sx={{ fontSize: 12, fontWeight: 1000, mb: 1, color: '#86efac' }}>
+                                            ACCOUNT STATUS
                                         </Typography>
                                         <Typography sx={{ fontSize: 13, opacity: 0.9, lineHeight: 1.6 }}>
                                             Your account will be <strong>verified by our admin team</strong> (usually within 24 hours). Once approved, you'll have full platform access.
@@ -294,8 +287,6 @@ const RequestAccessModal = ({ open, onClose }) => {
                                 </Stack>
                             </Box>
                         </Box>
-
-                        {/* Right Side - Form Section */}
                         <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: '#1e293b' }}>
                                 Request Access
