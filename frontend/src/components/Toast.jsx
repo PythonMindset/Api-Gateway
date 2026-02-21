@@ -71,21 +71,22 @@ const Toast = ({
     };
 
     const handleClose = (event, reason) => {
-        if (reason === 'timeout') {
         onClose();
-        }
     };
+
+    if (!open) return null;
 
     return (
         <Snackbar
-        open={open}
+        open={true}
         onClose={handleClose}
         anchorOrigin={anchorOrigin}
         TransitionComponent={SlideTransition}
+        autoHideDuration={null}
         {...props}
         >
         <Alert
-            onClose={onClose}
+            onClose={handleClose}
             severity={severity}
             variant="filled"
             sx={{
@@ -94,6 +95,9 @@ const Toast = ({
             '& .MuiAlert-icon': {
                 fontSize: '1.2rem',
             },
+            '& .MuiAlert-closeIcon': {
+                cursor: 'pointer',
+            }
             }}
         >
             {message}

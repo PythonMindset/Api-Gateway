@@ -3,6 +3,8 @@ import { AuthProvider, useAuthContext } from './hooks/useAuthContext';
 import { ToastProvider } from './components/Toast';
 import Login from './pages/auth/Login';
 import Dashboard from './pages/Dashboard';
+import ChangePassword from './pages/auth/ChangePassword';
+import AccessRequests from './pages/AccessRequests';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -23,6 +25,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>}/>
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+            <Route path="/access-requests" element={<ProtectedRoute><AccessRequests /></ProtectedRoute>} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Router>

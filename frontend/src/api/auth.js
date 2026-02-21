@@ -21,13 +21,9 @@ export const authAPI = {
             throw new Error(errorMessage);
         }
         const responseData = await response.json();
-
-        // Check if the response indicates success
         if (!responseData.success) {
             throw new Error(responseData.message || 'Login failed');
         }
-
-        // Return the data object which contains token and user
         return responseData.data;
     },
 
@@ -52,13 +48,9 @@ export const authAPI = {
         }
 
         const responseData = await response.json();
-
-        // Check if the response indicates success
         if (!responseData.success) {
             throw new Error(responseData.message || 'Access request failed');
         }
-
-        // Return the data object
         return responseData.data;
     },
 };

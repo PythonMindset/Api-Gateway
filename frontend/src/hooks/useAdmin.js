@@ -20,8 +20,8 @@ export const useAccessRequests = () => {
                 throw new Error(response.message || 'Failed to fetch access requests');
             }
         } catch (err) {
-            setError(err.message);
-            throw err;
+            const errorMessage = err.message || 'Failed to fetch access requests';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
