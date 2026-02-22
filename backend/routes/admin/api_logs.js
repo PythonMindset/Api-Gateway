@@ -3,7 +3,6 @@ const router = express.Router();
 
 const authenticateToken = require('../../middlewares/authenticateToken');
 const handleValidationErrors = require('../../middlewares/handleValidationErrors');
-const apiLogger = require('../../middlewares/apiLogger');
 const { requireAdmin } = require('../../middlewares/rbac');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
 const validateGetApiLogs = require('../../validations/admin/getApiLogs');
@@ -11,7 +10,6 @@ const getApiLogs = require('../../controllers/admin/getApiLogs');
 
 router.use(authenticateToken);
 router.use(requireAdmin);
-router.use(apiLogger);
 router.use(handleValidationErrors);
 
 router.get('/', validateGetApiLogs, async (req, res) => {

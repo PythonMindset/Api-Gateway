@@ -19,9 +19,9 @@ import {
 } from '@mui/icons-material';
 import { useAuthContext } from '../../hooks/useAuthContext';
 
-const ProjectListView = ({ projects, onEdit, onDelete, onClick }) => {
+const ProjectListView = ({ projects, onEdit, onDelete, onClick, isAdmin }) => {
     const { user } = useAuthContext();
-    const isAdmin = user?.role === 'admin';
+    const shouldShowAdminActions = isAdmin !== undefined ? isAdmin : user?.role === 'admin';
 
     const getStatusColor = (status) => {
         const statusColors = {
@@ -76,7 +76,7 @@ const ProjectListView = ({ projects, onEdit, onDelete, onClick }) => {
                         <TableCell sx={{ fontWeight: 700, color: '#1f2937', width: '10%' }}>
                             Links
                         </TableCell>
-                        {isAdmin && (
+                        {shouldShowAdminActions && (
                             <TableCell align="right" sx={{ fontWeight: 700, color: '#1f2937', width: '8%' }}>
                                 Actions
                             </TableCell>
@@ -184,6 +184,7 @@ const ProjectListView = ({ projects, onEdit, onDelete, onClick }) => {
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 size="small"
+                                                onClick={(e) => e.stopPropagation()}
                                                 sx={{
                                                     color: '#1f2937',
                                                     padding: '0.5rem',
@@ -198,7 +199,7 @@ const ProjectListView = ({ projects, onEdit, onDelete, onClick }) => {
                                     )}
                                 </TableCell>
 
-                                {isAdmin && (
+                                {shouldShowAdminActions && (
                                     <TableCell align="right">
                                         <Box sx={{ display: 'flex', gap: '0.25rem', justifyContent: 'flex-end' }}>
                                             <Tooltip title="Edit">

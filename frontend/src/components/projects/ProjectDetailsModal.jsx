@@ -27,10 +27,11 @@ const ProjectDetailsModal = ({
     project,
     onClose,
     onEdit,
-    onDelete
+    onDelete,
+    isAdmin
 }) => {
     const { user } = useAuthContext();
-    const isAdmin = user?.role === 'admin';
+    const shouldShowAdminActions = isAdmin !== undefined ? isAdmin : user?.role === 'admin';
 
     if (!project) return null;
 
@@ -164,7 +165,7 @@ const ProjectDetailsModal = ({
                             />
                         </Box>
 
-                        {isAdmin && (
+                        {shouldShowAdminActions && (
                             <Box sx={{ flex: 1 }}>
                                 <Typography
                                     variant="caption"
@@ -326,7 +327,7 @@ const ProjectDetailsModal = ({
                 </Stack>
             </DialogContent>
 
-            {isAdmin && (
+            {shouldShowAdminActions && (
                 <DialogActions
                     sx={{
                         padding: '1rem 1.5rem',
@@ -385,7 +386,7 @@ const ProjectDetailsModal = ({
                 </DialogActions>
             )}
 
-            {!isAdmin && (
+            {!shouldShowAdminActions && (
                 <DialogActions
                     sx={{
                         padding: '1rem 1.5rem',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useToast } from '../components/Toast';
@@ -9,8 +9,11 @@ import ProjectDetailsModal from '../components/projects/ProjectDetailsModal';
 import AddProjectModal from '../components/projects/AddProjectModal';
 import EditProjectModal from '../components/projects/EditProjectModal';
 import DeleteConfirmationModal from '../components/projects/DeleteConfirmationModal';
-import { Grid, Box, Typography, ToggleButton, ToggleButtonGroup, Button } from '@mui/material';
-import { GridView as GridViewIcon, ListAlt as ListIcon, Add as AddIcon } from '@mui/icons-material';
+import ProjectFilters from '../components/projects/ProjectFilters';
+import { Grid, Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
+import { useProjects } from '../hooks/useProject';
+import { usePublicProjects } from '../hooks/useUser';
 import { projectAPI } from '../api/project';
 
 const Dashboard = () => {
@@ -18,6 +21,14 @@ const Dashboard = () => {
 
     const { user } = useAuthContext();
     const { showToast } = useToast();
+    
+    // Use appropriate hook based on user role
+    const adminHook = useProjects();
+    const viewerHook = usePublicProjects();
+    const isAdmin = user?.role === 'admin';
+    const { projects, loading, error, fetchProjects } = isAdmin ? adminHook : viewerHook;
+    const fetchFn = isAdmin ? adminHook.fetchProjects : viewerHook.fetchPublicProjects;
+    
     const [viewMode, setViewMode] = useState('grid');
     const [selectedProject, setSelectedProject] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
@@ -26,128 +37,22 @@ const Dashboard = () => {
     const [editingProject, setEditingProject] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState(null);
-    const dummyProjects = [
-        {
-            id: 1,
-            title: 'API Gateway',
-            description: 'A comprehensive API gateway solution with authentication, rate limiting, and API logging capabilities.',
-            tech_stack: 'Node.js, Express, PostgreSQL, React',
-            repo_url: 'https://github.com/user/api-gateway',
-            status: 'live',
-            is_public: false,
-            created_at: '2023-01-01T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-01-01T00:00:00.000Z'
-        },
-        {
-            id: 2,
-            title: 'Dashboard UI',
-            description: 'Modern responsive dashboard for project management with real-time updates.',
-            tech_stack: 'React, Material-UI, Redux, WebSocket',
-            repo_url: 'https://github.com/user/dashboard-ui',
-            status: 'completed',
-            is_public: true,
-            created_at: '2023-02-15T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-02-15T00:00:00.000Z'
-        },
-        {
-            id: 3,
-            title: 'Mobile App',
-            description: 'Cross-platform mobile application for iOS and Android with offline support.',
-            tech_stack: 'React Native, Firebase, Redux',
-            repo_url: 'https://github.com/user/mobile-app',
-            status: 'testing',
-            is_public: false,
-            created_at: '2023-03-20T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-03-20T00:00:00.000Z'
-        },
-        {
-            id: 4,
-            title: 'Data Analytics Platform',
-            description: 'Advanced analytics platform for tracking and visualizing project metrics.',
-            tech_stack: 'Python, Pandas, D3.js, Flask, PostgreSQL',
-            repo_url: 'https://github.com/user/analytics-platform',
-            status: 'planning',
-            is_public: false,
-            created_at: '2023-04-10T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-04-10T00:00:00.000Z'
-        },
-        {
-            id: 5,
-            title: 'Documentation Portal',
-            description: 'Comprehensive documentation portal with search and versioning capabilities.',
-            tech_stack: 'Next.js, MDX, TypeScript, Algolia',
-            repo_url: 'https://github.com/user/docs-portal',
-            status: 'live',
-            is_public: true,
-            created_at: '2023-05-05T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-05-05T00:00:00.000Z'
-        },
-        {
-            id: 6,
-            title: 'Payment Integration',
-            description: 'Secure payment processing system with multiple payment gateway support.',
-            tech_stack: 'Node.js, Stripe, Mongoose, React',
-            repo_url: 'https://github.com/user/payment-integration',
-            status: 'on_hold',
-            is_public: false,
-            created_at: '2023-06-12T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-06-12T00:00:00.000Z'
-        },
-        {
-            id: 7,
-            title: 'Legacy System Migration',
-            description: 'Migration of legacy monolithic application to microservices architecture.',
-            tech_stack: 'Java, Spring Boot, Docker, Kubernetes, PostgreSQL',
-            repo_url: 'https://github.com/user/legacy-migration',
-            status: 'archived',
-            is_public: false,
-            created_at: '2023-07-01T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-07-01T00:00:00.000Z'
-        },
-        {
-            id: 8,
-            title: 'Real-time Chat App',
-            description: 'Full-featured chat application with file sharing and video calling capabilities.',
-            tech_stack: 'Vue.js, Socket.io, Node.js, MongoDB, WebRTC',
-            repo_url: 'https://github.com/user/chat-app',
-            status: 'testing',
-            is_public: true,
-            created_at: '2023-08-20T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-08-20T00:00:00.000Z'
-        },
-        {
-            id: 9,
-            title: 'AI Content Generator',
-            description: 'AI-powered content generation tool with multiple language support.',
-            tech_stack: 'Python, GPT-4, FastAPI, React, PostgreSQL',
-            repo_url: 'https://github.com/user/ai-content-gen',
-            status: 'planning',
-            is_public: false,
-            created_at: '2023-09-10T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-09-10T00:00:00.000Z'
-        },
-        {
-            id: 10,
-            title: 'E-Commerce Platform',
-            description: 'Scalable e-commerce platform with inventory management and order tracking.',
-            tech_stack: 'Next.js, Shopify API, Prisma, PostgreSQL, Stripe',
-            repo_url: 'https://github.com/user/ecommerce',
-            status: 'completed',
-            is_public: true,
-            created_at: '2023-10-15T00:00:00.000Z',
-            created_by: 1,
-            updated_at: '2023-10-15T00:00:00.000Z'
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
+
+    // Fetch projects on component mount
+    useEffect(() => {
+        fetchFn().catch(() => {
+            // Error already handled in hook
+        });
+    }, []);
+
+    // Show error if fetching fails
+    useEffect(() => {
+        if (error) {
+            showToast(error, 'error');
         }
-    ];
+    }, [error, showToast]);
 
     const handleEdit = (project) => {
         setEditingProject(project);
@@ -165,6 +70,7 @@ const Dashboard = () => {
             showToast('Project deleted successfully!', 'success');
             setDeleteModalOpen(false);
             setProjectToDelete(null);
+            await fetchFn();
         } catch (error) {
             showToast(error.message || 'Failed to delete project', 'error');
         }
@@ -175,6 +81,7 @@ const Dashboard = () => {
             await projectAPI.createProject(projectData);
             showToast('Project created successfully!', 'success');
             setAddModalOpen(false);
+            await fetchFn();
         } catch (error) {
             showToast(error.message || 'Failed to create project', 'error');
         }
@@ -186,6 +93,7 @@ const Dashboard = () => {
             showToast('Project updated successfully!', 'success');
             setEditModalOpen(false);
             setEditingProject(null);
+            await fetchFn();
         } catch (error) {
             showToast(error.message || 'Failed to update project', 'error');
         }
@@ -199,6 +107,24 @@ const Dashboard = () => {
     const handleCloseModal = () => {
         setModalOpen(false);
         setSelectedProject(null);
+    };
+
+    // Filter projects based on search term and status
+    const filteredProjects = projects.filter(project => {
+        const searchLower = searchTerm.toLowerCase();
+        const matchesSearch = 
+            project.title.toLowerCase().includes(searchLower) ||
+            (project.description && project.description.toLowerCase().includes(searchLower)) ||
+            (project.tech_stack && project.tech_stack.toLowerCase().includes(searchLower));
+        
+        const matchesStatus = statusFilter === '' || project.status === statusFilter;
+        
+        return matchesSearch && matchesStatus;
+    });
+
+    const handleClearFilters = () => {
+        setSearchTerm('');
+        setStatusFilter('');
     };
     return (
         <div style={{
@@ -219,10 +145,9 @@ const Dashboard = () => {
                         </Typography>
                     </Box>
 
-                    {/* View Toggle and Add Project Button */}
-                    <Box sx={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        {/* Add Project Button - Admin Only */}
-                        {user?.role === 'admin' && (
+                    {/* Add Project Button - Admin Only */}
+                    {user?.role === 'admin' && (
+                        <Box sx={{ marginBottom: '1.5rem' }}>
                             <Button
                                 variant="contained"
                                 startIcon={<AddIcon />}
@@ -239,63 +164,67 @@ const Dashboard = () => {
                             >
                                 Add Project
                             </Button>
-                        )}
+                        </Box>
+                    )}
 
-                        {/* View Toggle */}
-                        <ToggleButtonGroup
-                            value={viewMode}
-                            exclusive
-                            onChange={(event, newMode) => {
-                                if (newMode !== null) {
-                                    setViewMode(newMode);
-                                }
-                            }}
-                            sx={{
-                                backgroundColor: '#f3f4f6',
-                                border: '1px solid #e5e7eb',
-                                borderRadius: '0.375rem',
-                                padding: '0.25rem'
-                            }}
-                        >
-                            <ToggleButton
-                                value="grid"
-                                aria-label="grid view"
-                                sx={{
-                                    padding: '0.5rem 0.75rem',
-                                    '&.Mui-selected': {
-                                        backgroundColor: '#ffffff',
-                                        color: '#3b82f6'
-                                    }
-                                }}
-                            >
-                                <GridViewIcon sx={{ fontSize: '1.2rem' }} />
-                            </ToggleButton>
-                            <ToggleButton
-                                value="list"
-                                aria-label="list view"
-                                sx={{
-                                    padding: '0.5rem 0.75rem',
-                                    '&.Mui-selected': {
-                                        backgroundColor: '#ffffff',
-                                        color: '#3b82f6'
-                                    }
-                                }}
-                            >
-                                <ListIcon sx={{ fontSize: '1.2rem' }} />
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </Box>
+                    {/* Search and Filter Section */}
+                    <ProjectFilters
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        statusFilter={statusFilter}
+                        setStatusFilter={setStatusFilter}
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                    />
+
+                    {/* Loading State */}
+                    {loading && (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '3rem 0' }}>
+                            <CircularProgress />
+                        </Box>
+                    )}
+
+                    {/* Empty State */}
+                    {!loading && projects.length === 0 && (
+                        <Box sx={{
+                            textAlign: 'center',
+                            padding: '3rem 1rem',
+                            backgroundColor: '#f9fafb',
+                            borderRadius: '0.5rem',
+                            border: '1px dashed #e5e7eb'
+                        }}>
+                            <Typography sx={{ color: '#6b7280', marginBottom: '1rem' }}>
+                                No projects yet. Create one to get started!
+                            </Typography>
+                        </Box>
+                    )}
+
+                    {/* No Results State */}
+                    {!loading && projects.length > 0 && filteredProjects.length === 0 && (
+                        <Box sx={{
+                            textAlign: 'center',
+                            padding: '3rem 1rem',
+                            backgroundColor: '#f9fafb',
+                            borderRadius: '0.5rem',
+                            border: '1px dashed #e5e7eb'
+                        }}>
+                            <Typography sx={{ color: '#6b7280', marginBottom: '1rem' }}>
+                                No projects match your filters.
+                            </Typography>
+                        </Box>
+                    )}
 
                     {/* Projects Grid View */}
-                    {viewMode === 'grid' && (
+                    {!loading && filteredProjects.length > 0 && viewMode === 'grid' && (
                         <Grid container spacing={2}>
-                            {dummyProjects.map((project) => (
+                            {filteredProjects.map((project) => (
                                 <Grid item xs={12} sm={6} lg={3} key={project.id} sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <ProjectCard
                                         project={project}
-                                        onEdit={handleEdit}
-                                        onDelete={handleDelete}
+                                        onEdit={isAdmin ? handleEdit : null}
+                                        onDelete={isAdmin ? handleDelete : null}
                                         onClick={handleOpenModal}
+                                        isAdmin={isAdmin}
                                     />
                                 </Grid>
                             ))}
@@ -303,12 +232,13 @@ const Dashboard = () => {
                     )}
 
                     {/* Projects List View */}
-                    {viewMode === 'list' && (
+                    {!loading && filteredProjects.length > 0 && viewMode === 'list' && (
                         <ProjectListView
-                            projects={dummyProjects}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
+                            projects={filteredProjects}
+                            onEdit={isAdmin ? handleEdit : null}
+                            onDelete={isAdmin ? handleDelete : null}
                             onClick={handleOpenModal}
+                            isAdmin={isAdmin}
                         />
                     )}
 
@@ -317,8 +247,9 @@ const Dashboard = () => {
                         open={modalOpen}
                         project={selectedProject}
                         onClose={handleCloseModal}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onEdit={isAdmin ? handleEdit : null}
+                        onDelete={isAdmin ? handleDelete : null}
+                        isAdmin={isAdmin}
                     />
 
                     {/* Add Project Modal */}

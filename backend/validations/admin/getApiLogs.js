@@ -29,7 +29,11 @@ const validateGetApiLogs = [
     query('level')
         .optional()
         .isIn(['info', 'warning', 'error'])
-        .withMessage('Level must be one of: info, warning, error')
+        .withMessage('Level must be one of: info, warning, error'),
+    query('role')
+        .optional()
+        .isIn(['admin', 'viewer'])
+        .withMessage('Role must be either admin or viewer')
 ];
 
 module.exports = validateGetApiLogs;
