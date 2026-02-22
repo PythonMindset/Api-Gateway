@@ -3,7 +3,6 @@ const router = express.Router();
 
 const authenticateToken = require('../../middlewares/authenticateToken');
 const handleValidationErrors = require('../../middlewares/handleValidationErrors');
-const apiLogger = require('../../middlewares/apiLogger');
 const { requireAdmin } = require('../../middlewares/rbac');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
 const createUserRateLimiter = require('../../middlewares/rateLimiter');
@@ -21,7 +20,6 @@ const deleteProject = require('../../controllers/project/deleteProject');
 router.use(createUserRateLimiter());
 router.use(authenticateToken);
 router.use(requireAdmin);
-router.use(apiLogger);
 router.use(handleValidationErrors);
 
 router.get('/', validateListProjects, async (req, res) => {

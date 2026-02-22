@@ -4,6 +4,7 @@ const { cleanupOldLogs } = require('./services/cleanup/cleanupLogs');
 const { cleanupInactiveViewers } = require('./services/cleanup/cleanupInactiveViewers');
 const { successResponse, errorResponse } = require('./utils/responseformat');
 const { swaggerUi, swaggerSpec } = require('./config/swagger');
+const apiLogger = require('./middlewares/apiLogger');
 
 const app = express();
 
@@ -11,6 +12,13 @@ const app = express();
 app.use(cors());
 app.use(require('./middlewares/rateLimiter').createGlobalRateLimiter());
 app.use(express.json());
+
+app.use((req, res, next) => {
+    if (req.path === '/health' || req.path.startsWith('/api-docs')) {
+        return next();
+    }
+    apiLogger(req, res, next);
+});
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

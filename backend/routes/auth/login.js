@@ -5,10 +5,8 @@ const jwt = require('jsonwebtoken');
 const validateLogin = require('../../validations/auth/login');
 const loginController = require('../../controllers/auth/login');
 const handleValidationErrors = require('../../middlewares/handleValidationErrors');
-const apiLogger = require('../../middlewares/apiLogger');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
 
-router.use(apiLogger);
 router.use(handleValidationErrors);
 
 router.post('/login', validateLogin, async (req, res) => {

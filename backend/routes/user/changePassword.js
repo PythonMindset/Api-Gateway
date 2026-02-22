@@ -5,11 +5,9 @@ const validateChangePassword = require('../../validations/user/changePassword');
 const changePasswordController = require('../../controllers/user/changePassword');
 const handleValidationErrors = require('../../middlewares/handleValidationErrors');
 const authenticateToken = require('../../middlewares/authenticateToken');
-const apiLogger = require('../../middlewares/apiLogger');
 const { successResponse, errorResponse } = require('../../utils/responseformat');
 
 router.use(authenticateToken);
-router.use(apiLogger);
 router.use(handleValidationErrors);
 
 router.put('/change-password', validateChangePassword, async (req, res) => {

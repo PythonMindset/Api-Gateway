@@ -20,9 +20,9 @@ import {
 import { useAuthContext } from '../../hooks/useAuthContext';
 import colors from '../../theme/color';
 
-const ProjectCard = ({ project, onEdit, onDelete, onClick }) => {
+const ProjectCard = ({ project, onEdit, onDelete, onClick, isAdmin }) => {
     const { user } = useAuthContext();
-    const isAdmin = user?.role === 'admin';
+    const shouldShowAdminActions = isAdmin !== undefined ? isAdmin : user?.role === 'admin';
 
     const techStackArray = typeof project.tech_stack === 'string'
         ? project.tech_stack.split(',').map(tech => tech.trim())
@@ -107,7 +107,7 @@ const ProjectCard = ({ project, onEdit, onDelete, onClick }) => {
                         </Typography>
                     </Box>
 
-                    {isAdmin && (
+                    {shouldShowAdminActions && (
                         <Box
                             sx={{
                                 display: 'flex',

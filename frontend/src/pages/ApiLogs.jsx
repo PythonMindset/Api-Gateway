@@ -7,25 +7,34 @@ import {
     Button
 } from '@mui/material';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
-import { useAccessRequests } from '../hooks/useAdmin';
+import { useApiLogs } from '../hooks/useAdmin';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useToast } from '../components/Toast';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/base/Header';
-import AccessRequestsTable from '../components/accessRequests/AccessRequestsTable';
-import AccessRequestsTableSkeleton from '../components/accessRequests/AccessRequestsTableSkeleton';
+import ApiLogsTable from '../components/apiLogs/ApiLogsTable';
+import ApiLogsTableSkeleton from '../components/apiLogs/ApiLogsTableSkeleton';
 import CommonPagination from '../components/common/Pagination';
+import ApiLogsFilters from '../components/apiLogs/ApiLogsFilters';
 
-const AccessRequests = () => {
-    usePageTitle('access requests');
+const ApiLogs = () => {
+    usePageTitle('API Logs');
     const navigate = useNavigate();
     const { user } = useAuthContext();
     const { showToast } = useToast();
-    const { accessRequests, loading, error, refetch } = useAccessRequests();
+    const { logs, loading, error, pagination, fetchApiLogs } = useApiLogs();
     
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [limit, setLimit] = useState(50);
+    const [filters, setFilters] = useState({
+        user_id: '',
+        endpoint: '',
+        method: '',
+        status_code: '',
+        level: '',
+        role: ''
+    });
     const [hasShownError, setHasShownError] = useState(false);
 
     useEffect(() => {
@@ -34,6 +43,15 @@ const AccessRequests = () => {
             setHasShownError(true);
         }
     }, [error]);
+
+    useEffect(() => {
+        const activeFilters = Object.fromEntries(
+            Object.entries(filters).filter(([, value]) => value !== '')
+        );
+        fetchApiLogs(currentPage, limit, activeFilters).catch(() => {
+            // Error already handled in hook
+        });
+    }, [currentPage, limit, filters]);
 
     if (user?.role !== 'admin') {
         return (
@@ -56,20 +74,18 @@ const AccessRequests = () => {
         );
     }
 
-    const safeAccessRequests = Array.isArray(accessRequests) ? accessRequests : [];
-    const totalItems = safeAccessRequests.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedData = safeAccessRequests.slice(startIndex, endIndex);
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+        setCurrentPage(1);
+    };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleItemsPerPageChange = (value) => {
-        setItemsPerPage(value);
+    const handleLimitChange = (newLimit) => {
+        setLimit(newLimit);
         setCurrentPage(1);
     };
 
@@ -83,15 +99,16 @@ const AccessRequests = () => {
         >
             <Header />
             <Container maxWidth="lg">
-                <Box sx={{ paddingY: '2rem' }}>
+                <Box sx={{ paddingY: '1.5rem' }}>
                     {/* Page Header */}
-                    <Box sx={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <Box sx={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <Button
                             startIcon={<ArrowBackIcon />}
                             onClick={() => navigate('/dashboard')}
                             sx={{
                                 textTransform: 'none',
                                 color: '#3b82f6',
+                                padding: '0.5rem 0.75rem',
                                 '&:hover': {
                                     backgroundColor: 'rgba(59, 130, 246, 0.1)'
                                 }
@@ -100,44 +117,56 @@ const AccessRequests = () => {
                             Back to Dashboard
                         </Button>
                     </Box>
-                    <Box sx={{ marginBottom: '2rem' }}>
+
+                    {/* Title */}
+                    <Box sx={{ marginBottom: '1.5rem' }}>
                         <Typography
-                            variant="h4"
+                            variant="h5"
                             sx={{
                                 fontWeight: 700,
                                 color: '#1f2937',
-                                marginBottom: '0.5rem'
+                                marginBottom: '0.25rem',
+                                fontSize: '1.5rem'
                             }}
                         >
-                            Access Requests
+                            API Logs
                         </Typography>
-                        <Typography sx={{ color: '#6b7280' }}>
-                            View all user access requests and their details
+                        <Typography sx={{ color: '#6b7280', fontSize: '0.95rem' }}>
+                            Monitor and filter API requests
                         </Typography>
+                    </Box>
+
+                    {/* Filters */}
+                    <Box sx={{ marginBottom: '1.5rem' }}>
+                        <ApiLogsFilters 
+                            filters={filters} 
+                            onFilterChange={handleFilterChange}
+                            loading={loading}
+                        />
                     </Box>
 
                     {/* Loading State - Skeleton Loader */}
                     {loading && (
-                        <AccessRequestsTableSkeleton rows={itemsPerPage} />
+                        <ApiLogsTableSkeleton rows={limit} />
                     )}
 
-                    {/* Table and Pagination - Show always (table handles empty state) */}
+                    {/* Table and Pagination */}
                     {!loading && (
                         <>
-                            <AccessRequestsTable 
-                                data={paginatedData} 
+                            <ApiLogsTable 
+                                data={logs} 
                                 loading={loading}
                             />
                             
-                            {totalItems > 0 && (
+                            {pagination && pagination.total > 0 && (
                                 <CommonPagination
                                     currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    itemsPerPage={itemsPerPage}
-                                    totalItems={totalItems}
+                                    totalPages={pagination.pages}
+                                    itemsPerPage={limit}
+                                    totalItems={pagination.total}
                                     onPageChange={handlePageChange}
-                                    onItemsPerPageChange={handleItemsPerPageChange}
-                                    pageSizeOptions={[5, 10, 15, 20, 50]}
+                                    onItemsPerPageChange={handleLimitChange}
+                                    pageSizeOptions={[10, 25, 50, 100]}
                                 />
                             )}
                         </>
@@ -148,4 +177,4 @@ const AccessRequests = () => {
     );
 };
 
-export default AccessRequests;
+export default ApiLogs;

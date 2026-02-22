@@ -5,6 +5,7 @@ import Login from './pages/auth/Login';
 import Dashboard from './pages/Dashboard';
 import ChangePassword from './pages/auth/ChangePassword';
 import AccessRequests from './pages/AccessRequests';
+import ApiLogs from './pages/ApiLogs';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
             <Route path="/access-requests" element={<ProtectedRoute><AccessRequests /></ProtectedRoute>} />
+            <Route path="/api-logs" element={<ProtectedRoute><ApiLogs /></ProtectedRoute>} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Router>
