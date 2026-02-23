@@ -22,18 +22,27 @@
 
 ## 🛠️ Tech Stack
 
+
 ### Backend 🖥️
 - **Node.js** - Runtime environment
 - **Express.js** - Fast, unopinionated web framework
 - **PostgreSQL** - Advanced open-source relational database
 - **JWT** - JSON Web Tokens for secure authentication
-- **bcrypt** - Password hashing for security
+- **bcryptjs** - Password hashing for security
 - **Swagger** - API documentation and testing
 - **Nodemailer** - Email sending functionality
+- **dotenv** - Environment variable management
+- **express-validator** - Input validation
+- **pg** - PostgreSQL client
+
 
 ### Frontend 💻
 - **React 19** - Modern JavaScript library for building user interfaces
 - **Vite** - Next-generation frontend tooling for faster development
+- **Material UI (MUI)** - Component library for fast, accessible UI
+- **Emotion** - CSS-in-JS styling (used by MUI)
+- **React Router DOM** - Client-side routing
+- **Fontsource** - Self-hosted webfonts
 - **ESLint** - Code linting and formatting
 - **Modern CSS** - Responsive and beautiful styling
 - **Custom API Services** - Modular HTTP client for all backend endpoints
@@ -96,8 +105,16 @@ cd backend
 psql -U <your-username> -d api_gateway_db -f sql/master.sql
 ```
 
+
 ### 5. Environment Setup
-Create a `.env` file in the `backend` directory with **all** the following variables:
+
+#### Backend
+Copy `backend/.env.example` to `backend/.env` and fill in all required variables.
+
+#### Frontend
+Copy `frontend/.env.example` to `frontend/.env` and set the required variables.
+
+See both `backend/.env.example` and `frontend/.env.example` for all required variables and descriptions.
 
 ```env
 # ===========================================
@@ -149,11 +166,13 @@ RATE_LIMIT_MAX=100
 
 > **Note:** All environment variables are required for the application to function properly. The rate limiting variables have default values if not specified.
 
+
 ### 6. Create Admin User
 ```bash
 cd backend
-node test/admin.js admin@example.com securepassword123
+node test/admin.js "Admin Name" admin@example.com securepassword123
 ```
+> **Note:** The script now requires the admin's name, email, and password as arguments.
 
 ### 7. Start the Application
 ```bash
@@ -213,8 +232,14 @@ api-gateway/
 ├── 📁 frontend/
 │   ├── 📁 public/         # Static assets
 │   ├── 📁 src/            # React components & logic
-│   │   ├── App.jsx        # Main application component
-│   │   └── main.jsx       # React entry point
+│   │   ├── api/           # API client modules
+│   │   ├── assets/        # Images, fonts, etc.
+│   │   ├── components/    # Reusable UI components (MUI-based)
+│   │   ├── config/        # App configuration
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── pages/         # Main route pages
+│   │   ├── theme/         # MUI theme customization
+│   │   └── utils/         # Utility functions
 │   └── vite.config.js     # Vite build configuration
 ├── 📄 package.json        # Project dependencies
 └── 📄 README.md           # This file
