@@ -67,8 +67,9 @@ createdb api_gateway_db
 psql -U your_username -d api_gateway_db -f sql/master.sql
 ```
 
+
 ### Environment Configuration
-Create a `.env` file with all required variables (see main README for complete list).
+Copy `.env.example` to `.env` and fill in all required variables. See comments in `.env.example` for details on each variable.
 
 ### Running the Backend
 ```bash
@@ -158,14 +159,20 @@ Note: Authorization middleware is applied selectively based on routes. Public ro
 
 ## 📡 API Endpoints
 
+
 ### Authentication
 - `POST /auth/login` - User login
-- `POST /auth/accessRequest` - Register new user with auto-generated credentials (public)
+- `POST /auth/access-request` - Register new user with auto-generated credentials (public)
+
 
 ### User Operations
-- `PUT /user/changePassword` - Change password (authenticated)
+- `PUT /user/change-password` - Change password (authenticated)
 - `GET /user/public` - List public projects (authenticated)
 - `GET /user/public/:id` - Get project details (authenticated)
+### API Documentation
+
+Interactive API documentation is available via Swagger UI:
+- Visit [`/api-docs`](http://localhost:PORT/api-docs) after starting the backend to explore and test endpoints.
 
 ### Project Management (Admin Only)
 - `GET /projects` - List all projects
@@ -257,8 +264,13 @@ The backend includes scheduled background tasks for database maintenance:
 
 ## �🧪 Testing
 
+
 ### Test Scripts
-- Admin user creation: `node test/admin.js <email> <password>`
+- **Admin user creation:**
+    ```bash
+    node test/admin.js <name> <email> <password>
+    ```
+- The script requires the admin's name, email, and password as arguments.
 - Located in `backend/test/` directory
 
 ### Running Tests
@@ -292,12 +304,15 @@ npm test
 
 ## 🚀 Deployment Considerations
 
+
 ### Environment Variables
-Ensure all production environment variables are set:
+All required environment variables are documented in `.env.example`. Copy this file to `.env` and update values as needed for your environment:
 - Database credentials
 - JWT secrets
 - Email configuration
-- CORS settings
+- Rate limiting settings
+- Log and user cleanup settings
+- Server port and CORS settings
 
 ### Database
 - Use connection pooling for production
